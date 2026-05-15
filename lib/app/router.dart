@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ipot_mobile/features/scan/presentation/scan_screen.dart';
+
+import '../features/menu/presentation/menu_screen.dart';
+import '../features/scan/presentation/scan_screen.dart';
 
 /// Top-level [GoRouter] configuration.
 ///
-/// Routes are added as features land:
+/// Routes:
 /// - `/scan`    — QR scanner (B1)
-/// - `/menu/:tableId`  — menu browse (B2; placeholder until then)
+/// - `/menu/:tableId`  — menu browse (B2)
 /// - `/cart`    — cart review (B3)
 /// - `/order/:orderId` — confirmation + tracking (B5)
 final appRouter = GoRouter(
@@ -18,32 +19,8 @@ final appRouter = GoRouter(
       path: '/menu/:tableId',
       builder: (context, state) {
         final tableId = state.pathParameters['tableId']!;
-        return _PlaceholderMenuScreen(tableId: tableId);
+        return MenuScreen(tableId: tableId);
       },
     ),
   ],
 );
-
-/// Temporary menu landing until B2 ships the real [MenuScreen].
-class _PlaceholderMenuScreen extends StatelessWidget {
-  const _PlaceholderMenuScreen({required this.tableId});
-
-  final String tableId;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Table $tableId')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Text(
-            'Menu for table $tableId loads in B2.\n'
-            'Scan flow is wired — you reached the right route.',
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    );
-  }
-}
