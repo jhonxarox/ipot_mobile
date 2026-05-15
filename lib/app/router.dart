@@ -1,40 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ipot_mobile/features/scan/presentation/scan_screen.dart';
 
 /// Top-level [GoRouter] configuration.
 ///
 /// Routes are added as features land:
-/// - `/`        — placeholder home (replaced by `/scan` in B1)
 /// - `/scan`    — QR scanner (B1)
-/// - `/menu/:tableId`  — menu browse (B2)
+/// - `/menu/:tableId`  — menu browse (B2; placeholder until then)
 /// - `/cart`    — cart review (B3)
 /// - `/order/:orderId` — confirmation + tracking (B5)
 final appRouter = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/scan',
   routes: [
+    GoRoute(path: '/', redirect: (context, state) => '/scan'),
+    GoRoute(path: '/scan', builder: (context, state) => const ScanScreen()),
     GoRoute(
-      path: '/',
-      builder: (context, state) => const _PlaceholderHomeScreen(),
+      path: '/menu/:tableId',
+      builder: (context, state) {
+        final tableId = state.pathParameters['tableId']!;
+        return _PlaceholderMenuScreen(tableId: tableId);
+      },
     ),
   ],
 );
 
-/// Temporary landing screen until the QR scanner ships in B1.
-///
-/// Kept private and colocated with the router so it can be deleted in a
-/// single edit without leaking into the `features/` tree.
-class _PlaceholderHomeScreen extends StatelessWidget {
-  const _PlaceholderHomeScreen();
+/// Temporary menu landing until B2 ships the real [MenuScreen].
+class _PlaceholderMenuScreen extends StatelessWidget {
+  const _PlaceholderMenuScreen({required this.tableId});
+
+  final String tableId;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('IPOT Mobile')),
-      body: const Center(
+      appBar: AppBar(title: Text('Table $tableId')),
+      body: Center(
         child: Padding(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: Text(
-            'QR ordering coming soon.\nScan a table QR to start.',
+            'Menu for table $tableId loads in B2.\n'
+            'Scan flow is wired — you reached the right route.',
             textAlign: TextAlign.center,
           ),
         ),
