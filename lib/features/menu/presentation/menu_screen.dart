@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/app_error_view.dart';
 import '../../../core/widgets/app_loader.dart';
+import '../../cart/application/cart_controller.dart';
+import '../../cart/presentation/totals_bar.dart';
 import '../domain/menu.dart';
 import '../domain/menu_item.dart';
 import 'category_tabs.dart';
@@ -28,15 +31,17 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-      () => ref.read(searchQueryProvider.notifier).clear(),
-    );
+    Future.microtask(() {
+      ref.read(searchQueryProvider.notifier).clear();
+      ref.read(cartProvider.notifier).setTableId(widget.tableId);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final menuAsync = ref.watch(menuControllerProvider(widget.tableId));
     final searchQuery = ref.watch(searchQueryProvider);
+    final cartCount = ref.watch(cartItemCountProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -44,6 +49,16 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
           data: (menu) => Text(menu.restaurant.name),
           orElse: () => Text('Table ${widget.tableId}'),
         ),
+        actions: [
+          IconButton(
+            onPressed: cartCount == 0 ? null : () => context.push('/cart'),
+            icon: Badge(
+              isLabelVisible: cartCount > 0,
+              label: Text('$cartCount'),
+              child: const Icon(Icons.shopping_cart_outlined),
+            ),
+          ),
+        ],
       ),
       body: menuAsync.when(
         loading: () => const AppLoader(message: 'Loading menu…'),
@@ -97,6 +112,11 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                         ),
                       ),
               ),
+              if (cartCount > 0)
+                TotalsBar(
+                  actionLabel: 'View cart',
+                  onAction: () => context.push('/cart'),
+                ),
             ],
           );
         },
