@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/cart/presentation/cart_screen.dart';
 import '../features/menu/presentation/menu_screen.dart';
+import '../features/order/presentation/order_screen.dart';
 import '../features/scan/presentation/scan_screen.dart';
 
 /// Top-level [GoRouter] configuration.
@@ -10,7 +11,7 @@ import '../features/scan/presentation/scan_screen.dart';
 /// - `/scan`    — QR scanner (B1)
 /// - `/menu/:tableId`  — menu browse (B2)
 /// - `/cart`    — cart review (B4)
-/// - `/order/:orderId` — confirmation + tracking (B5)
+/// - `/order/:orderId` — confirmation + status tracking (B5)
 final appRouter = GoRouter(
   initialLocation: '/scan',
   routes: [
@@ -26,6 +27,13 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/cart',
       builder: (context, state) => const CartScreen(),
+    ),
+    GoRoute(
+      path: '/order/:orderId',
+      builder: (context, state) {
+        final orderId = state.pathParameters['orderId']!;
+        return OrderScreen(orderId: orderId);
+      },
     ),
   ],
 );
