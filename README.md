@@ -103,21 +103,6 @@ The trade-off is real: shared cross-cutting code (theming, networking, generic w
 
 ---
 
-## Screenshots
-
-> TODO before submission: capture a happy-path GIF — scan → menu → customize → cart → place order → status — and drop it in `docs/screenshots/`. One ~10s recording communicates more than a wall of stills.
-
-Suggested filenames inside `docs/screenshots/`:
-
-- `01-scan.png`
-- `02-menu.png`
-- `03-item-detail.png`
-- `04-cart.png`
-- `05-order.png`
-- `happy-path.gif`
-
----
-
 ## Tests
 
 ```
