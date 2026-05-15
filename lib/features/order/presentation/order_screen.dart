@@ -103,11 +103,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
         child: ListView(
           padding: const EdgeInsets.all(24),
           children: [
-            Icon(
-              Icons.check_circle_outline,
-              size: 56,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            const _ConfirmationIcon(),
             const SizedBox(height: 16),
             Text(
               'Order placed',
@@ -149,6 +145,56 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
               ),
             ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// One-shot scale-and-fade on the confirmation check icon.
+///
+/// Lives in its own widget so the parent's polling-driven rebuilds
+/// don't retrigger the animation.
+class _ConfirmationIcon extends StatefulWidget {
+  const _ConfirmationIcon();
+
+  @override
+  State<_ConfirmationIcon> createState() => _ConfirmationIconState();
+}
+
+class _ConfirmationIconState extends State<_ConfirmationIcon>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 420),
+    )..forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scale = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutBack,
+    );
+    return FadeTransition(
+      opacity: _controller,
+      child: ScaleTransition(
+        scale: scale,
+        child: Icon(
+          Icons.check_circle_outline,
+          size: 56,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     );
